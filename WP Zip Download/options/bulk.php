@@ -1,12 +1,10 @@
 <?php 
 
-
 if (!defined('ABSPATH')) {
     exit; 
 }
 
-
-
+// Ajouter les scripts de l'admin pour la sélection en lot
 add_action('admin_enqueue_scripts', 'telecharger_zip_enqueue_scripts');
 function telecharger_zip_enqueue_scripts($hook) {
     if ($hook !== 'upload.php') {
@@ -53,7 +51,7 @@ function telecharger_zip_enqueue_scripts($hook) {
                     if (response.success) {
                         window.location.href = response.data;
                     } else {
-                        alert(response.data);
+                        alert(response.message || "Erreur dans la création du ZIP."); // Utiliser message ou un message par défaut
                     }
                 },
                 error: function() {

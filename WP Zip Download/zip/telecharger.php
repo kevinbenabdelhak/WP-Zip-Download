@@ -1,6 +1,5 @@
 <?php 
 
-
 if (!defined('ABSPATH')) {
     exit; 
 }
@@ -18,44 +17,51 @@ function telecharger_zip() {
     }
 
     $media_ids = array_map('intval', $_POST['media']);
-    $upload_dir = wp_upload_dir();
-    $zip_dir = $upload_dir['path'];
+    
+    // Définir le chemin du répertoire du plugin
+    $plugin_dir = plugin_dir_path(__DIR__);
 
-    if (!is_dir($zip_dir)) {
-        wp_die('Le répertoire de destination n\'existe pas.');
-    }
+    // Définir le chemin du fichier ZIP dans le répertoire du plugin
+    $zip_filename = $plugin_dir . 'media_' . time() . '.zip';
 
-    $zip_filename = $zip_dir . '/media_' . time() . '.zip';
-    $zip = new ZipArchive();
-
-    if ($zip->open($zip_filename, ZipArchive::CREATE) !== TRUE) {
-        wp_die('Impossible d\'ouvrir le fichier ZIP à cet emplacement : ' . $zip_filename);
-    }
-
+    // Créer une liste des fichiers à zipper
+    $file_list = [];
     foreach ($media_ids as $media_id) {
         $file_path = get_attached_file($media_id);
         if (file_exists($file_path)) {
-            $zip->addFile($file_path, basename($file_path));
+            $file_list[] = escapeshellarg($file_path);
         } else {
             wp_die('Le fichier suivant n\'existe pas : ' . esc_html($file_path));
         }
     }
 
-    if (!$zip->close()) {
-        wp_die('Impossible de fermer le fichier ZIP.');
+    // Utiliser la commande zip pour créer l'archive
+    if (count($file_list) > 0) {
+        $zip_command = 'zip -j ' . escapeshellarg($zip_filename) . ' ' . implode(' ', $file_list);
+        shell_exec($zip_command);
+    } else {
+        wp_die('Aucun fichier à zipper.');
     }
 
     if (!file_exists($zip_filename)) {
         wp_die('Le fichier ZIP n\'a pas été créé.');
     }
 
-    $zip_file_url = $upload_dir['url'] . '/' . basename($zip_filename);
+    // Générer l'URL du fichier pour téléchargement
+    $zip_file_url = plugin_dir_url(__DIR__) . basename($zip_filename);
 
     $interval_minutes = intval(get_option('wp_zip_cron_time', 5));
     wp_schedule_single_event(time() + $interval_minutes * 60, 'supprimer_zip_file', [$zip_filename]);
 
+    // Collection des données de réponse
+    $response = [
+        'success' => true,
+        'data' => $zip_file_url,
+        'message' => __('ZIP créé avec succès.', 'textdomain') // Ajouter un message de succès
+    ];
+
     header('Content-Type: application/json');
-    echo json_encode(['success' => true, 'data' => $zip_file_url]);
+    echo json_encode($response);
     exit();
 }
 
