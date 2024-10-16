@@ -19,7 +19,7 @@ add_action('admin_menu', 'wp_zip_download_menu');
 function wp_zip_download_settings_page() {
     ?>
     <div class="wrap">
-        <h1><?php _e('WP Zip Download Settings', 'textdomain'); ?></h1>
+        <h1><?php _e('WP Zip Download', 'textdomain'); ?></h1>
         <form method="post" action="options.php">
             <?php
             settings_fields('wp_zip_download_options');
