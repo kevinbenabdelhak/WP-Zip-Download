@@ -47,3 +47,7 @@ WP Zip Download enrichit votre site WordPress en ajoutant une fonction permettan
 ### 1.0
 * Ajout de la fonctionnalité de téléchargement en ZIP depuis la bibliothèque de médias.
 * Possibilité de configurer l'intervalle de suppression automatique des fichiers ZIP.
+
+<a href="https://kevin-benabdelhak.fr/soutenir/">
+  <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXY0cmdrdnNjcXlxb3hrcG15YmpzYWRqZ3BpeHNyY3I4YjZ1eXc0dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/R9mgVlsCuv6XCDK8Lb/giphy.gif" alt="Soutenir Kevin Benabdelhak pour développer des plugins WordPress" style="width:100%;" />
+</a>
